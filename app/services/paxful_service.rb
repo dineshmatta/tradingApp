@@ -1,10 +1,10 @@
 require 'rest-client'
 require 'openssl'
-require 'Base64'
+require 'base64'
 
 class PaxfulService
 
-  BASE_ENDPOINTS = 'https://paxful.com/api/'
+  BASE_ENDPOINT = 'https://paxful.com/api/'
 
   ENDPOINTS = {
     'tradeList' => 'trade/list'
@@ -12,13 +12,16 @@ class PaxfulService
 
   def initialize(params)
     @endpoint = ENDPOINTS[params[:entity]]
-    @url = BASE_ENDPOINTS + @endpoint
+    @url = BASE_ENDPOINT + @endpoint
   end
 
   def fetch_trades
     begin
       ## Make API call to paxful 
-      response = RestClient::Request.execute(method: :post, url: @url, payload: get_request_payload)
+      response = RestClient::Request.execute(method: :post, 
+                                             url: @url, 
+                                             payload: get_request_payload,
+                                             headers: {Accept: 'application/json; version=1', "Content-Type": "text/plain", "Accept-encoding": "gzip, deflate, br", "Accept-Encoding": "gzip, deflate, br", method: "POST"})
     rescue RestClient::ExceptionWithResponse => e
       e.response
     end
@@ -31,15 +34,16 @@ class PaxfulService
   def get_request_payload(req_params=nil)
     payload = "apikey="+configatron.apiKey+"&nonce="+Time.now.to_i.to_s
     if(req_params)
-      payload += req_params.join('&')
+      payload += req_params.join('&') 
     end
-    final_payload = payload+calculate_api_seal(payload)
+    final_payload = payload + calculate_api_seal(payload)
   end
 
   def calculate_api_seal(data)
     apiseal = '&apiseal='
     secret_key = configatron.secret
-    final_api_seal = apiseal + Base64.encode64(OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha256'), secret_key, data)).strip()
+    final_api_seal = apiseal + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha256'), secret_key, data)
+    final_api_seal
   end
 
   # def external_charge_service
