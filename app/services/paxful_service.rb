@@ -7,10 +7,12 @@ class PaxfulService
   BASE_ENDPOINT = 'https://paxful.com/api/'
 
   ENDPOINTS = {
-    'tradeList' => 'trade/list'
+    'tradeList' => 'trade/list',
+    'fetchTrade' => 'trade/get'
   }
 
   def initialize(params)
+    RestClient.log = 'stdout'
     @endpoint = ENDPOINTS[params[:entity]]
     @url = BASE_ENDPOINT + @endpoint
   end
@@ -21,7 +23,19 @@ class PaxfulService
       response = RestClient::Request.execute(method: :post, 
                                              url: @url, 
                                              payload: get_request_payload,
-                                             headers: {Accept: 'application/json; version=1', "Content-Type": "text/plain", "Accept-encoding": "gzip, deflate, br", "Accept-Encoding": "gzip, deflate, br", method: "POST"})
+                                             headers: {Accept: 'application/json; version=1', "Content-Type": "text/plain", method: "POST"})
+    rescue RestClient::ExceptionWithResponse => e
+      e.response
+    end
+  end
+  
+  def fetch_trade(trade_id)
+    begin
+      ## Make API call to paxful 
+      response = RestClient::Request.execute(method: :post, 
+                                             url: @url, 
+                                             payload: get_request_payload('&trade_hash='+trade_id),
+                                             headers: {Accept: 'application/json; version=1', "Content-Type": "text/plain", method: "POST"})
     rescue RestClient::ExceptionWithResponse => e
       e.response
     end
@@ -34,7 +48,7 @@ class PaxfulService
   def get_request_payload(req_params=nil)
     payload = "apikey="+configatron.apiKey+"&nonce="+Time.now.to_i.to_s
     if(req_params)
-      payload += req_params.join('&') 
+      payload += req_params; 
     end
     final_payload = payload + calculate_api_seal(payload)
   end

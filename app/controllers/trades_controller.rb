@@ -4,16 +4,25 @@ class TradesController < ApplicationController
   # GET /trades
   # GET /trades.json
   def index
-    trades = PaxfulService.new(entity: 'tradeList').fetch_trades()
+    @trades = PaxfulService.new(entity: 'tradeList').fetch_trades()
     p '*****************************\n'
-    p trades.body
-    @trades = Trade.all
-
+    p JSON.parse(@trades.body)["data"]["trades"]
+    @trades = JSON.parse(@trades.body)["data"]["trades"]
+    #@trades = Trade.all
   end
 
   # GET /trades/1
   # GET /trades/1.json
   def show
+  end
+  
+  # POST /trades/trade_hash
+  def generate_url
+    ## Fetch trade
+    p 'kkkkkkkkkkkkkkkkkkkkkkkkk\n'
+    p params[:trade_hash]
+    trade = PaxfulService.new(entity: 'fetchTrade').fetch_trade(params[:trade_hash])
+    @trade = JSON.parse(trade.body)["data"]["trade"]
   end
 
   # GET /trades/new
