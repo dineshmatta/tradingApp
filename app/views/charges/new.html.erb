@@ -1,0 +1,38 @@
+
+<%= form_tag charges_path, {:id => 'stripeForm', :style => "text-align: center;margin-top:250px;" } do %>
+   <script src="https://checkout.stripe.com/checkout.js"></script>
+   <article>
+     <%= label_tag 'amount', 'To Pay', class: 'amount' %>
+     <%= label_tag 'amount', "$#{@trade["fiat_amount_requested"]}.00", class: "amount-figure" %>
+   </article> <br>
+   <button id="stripe-button">&nbsp;</button>
+   <%= hidden_field_tag 'stripeToken' %>
+   <%= hidden_field_tag 'stripeEmail' %>
+   <%= hidden_field_tag 'stripeAmount' %>
+ 
+   <script>
+     var handler = StripeCheckout.configure({
+       key: "<%= Rails.configuration.stripe[:publishable_key] %>",
+       token: function (token, args) {
+         $("#stripeToken").value = token.id;
+         $("#stripeEmail").value = token.email;
+         $("#stripeAmount").value = <%= @trade["fiat_amount_requested"] %>;
+         $("#stripeForm").submit();
+       }
+     });
+ 
+     $('#stripe-button').on('click', function (e) {
+       // Open Checkout with further options
+       handler.open({
+         name: 'Your customer name',
+         description: 'Your description goes here',
+         amount: <%= @trade["fiat_amount_requested"].to_i * 100 %>
+       });
+     e.preventDefault();
+     });
+ 
+     $(window).on('popstate', function() {
+       handler.close();
+     });
+   </script>
+ <% end %>

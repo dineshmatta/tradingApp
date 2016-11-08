@@ -11,7 +11,7 @@
       <th>Amount Requested (Bitcoin)</th>
       <th>Trade Hash</th>
       <th>Offer Hash</th>
-      <th colspan="1"></th>
+      <th>Trade URL</th>
     </tr>
   </thead>
 
@@ -24,7 +24,7 @@
         <td><%= trade["crypto_amount_requested"] %></td>
         <td><%= trade["trade_hash"] %></td>
         <td><%= trade["offer_hash"] %></td>
-        <td><%= link_to 'Generate Trade URL', generate_trade_url_path(trade["trade_hash"]) %></td>
+        <td><%= url_for controller: 'charges', action: 'new',  host: 'trading-app-dineshdhoom.c9users.io', protocol: 'https',trade_hash: trade["trade_hash"] %></td>
       </tr>
     <% end %>
   </tbody>
