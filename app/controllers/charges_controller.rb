@@ -9,7 +9,7 @@ class ChargesController < ApplicationController
       p 'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL\n'
       
       # Amount in cents
-      @amount = params[:stripeAmount].to_i * 100
+      @amount = 2600#params[:stripeAmount].to_i * 100
       #@amount = @trade['fiat_amount_requested'].to_i * 100#500
     
       customer = Stripe::Customer.create(

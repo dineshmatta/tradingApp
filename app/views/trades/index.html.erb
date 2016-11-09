@@ -1,6 +1,6 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Trades</h1>
+<h1>Active Trades</h1>
 
 <table border=1>
   <thead>
@@ -24,12 +24,10 @@
         <td><%= trade["crypto_amount_requested"] %></td>
         <td><%= trade["trade_hash"] %></td>
         <td><%= trade["offer_hash"] %></td>
-        <td><%= url_for controller: 'charges', action: 'new',  host: 'trading-app-dineshdhoom.c9users.io', protocol: 'https',trade_hash: trade["trade_hash"] %></td>
+        <td><%= link_to (url_for controller: 'charges', action: 'new',  host: 'localhost:3000', protocol: 'http', trade_hash: trade["trade_hash"]) %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
 <br>
-
-<%= link_to 'New Trade', new_trade_path %>

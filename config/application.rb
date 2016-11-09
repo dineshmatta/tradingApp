@@ -28,5 +28,10 @@ module TradingApp
           :max_age => 0
       end
     end
+
+    config.action_dispatch.default_headers = {
+        'X-Frame-Options' => 'ALLOWALL'
+    }
+    
   end
 end
