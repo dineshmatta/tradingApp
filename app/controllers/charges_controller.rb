@@ -7,9 +7,6 @@ class ChargesController < ApplicationController
     end
     
     def create
-      p 'fffffffff\n'
-      p params[:trade_hash]
-
       @amount = params[:amount]
       
       @amount = @amount.gsub('$', '').gsub(',', '')
