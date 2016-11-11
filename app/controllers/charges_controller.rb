@@ -6,11 +6,11 @@ class ChargesController < ApplicationController
     end
     
     def create
-      p 'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL\n'
+      @amount = params[:amount]
       
-      # Amount in cents
-      @amount = 2600#params[:stripeAmount].to_i * 100
-      #@amount = @trade['fiat_amount_requested'].to_i * 100#500
+      @amount = @amount.gsub('$', '').gsub(',', '')
+      
+      @amount = @amount.to_i * 100 # Must be an integer!
     
       customer = Stripe::Customer.create(
         :email => params[:stripeEmail],

@@ -1,20 +1,57 @@
 <%= form_tag charges_path, {:style => "text-align: center;margin-top:250px;" } do %>
+  <% if flash[:error].present? %>
+  <div id="error_explanation">
+    <p><%= flash[:error] %></p>
+  </div>
+  <% end %>
   <article>
-    <% if flash[:error].present? %>
-      <div id="error_explanation">
-        <p><%= flash[:error] %></p>
-      </div>
-    <% end %>
     <label class="amount">
-      <span>Amount: $<%=@trade["fiat_amount_requested"]%></span><br/>
+      Amount: $ <span id="amount"><%=@trade["fiat_amount_requested"]%></span><br/>
       <span>Paying to: <%=@trade["seller"]["username"]%></span><br/>
       <span>Bitcoins you will get: <%=@trade["seller_fee_crypto_amount"].to_f/1000000%></span>
     </label>
   </article>
-
-  <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-          data-key="<%= Rails.configuration.stripe[:publishable_key] %>"
-          data-description="Purchasing Bitcoin for"+<%=@trade["fiat_amount_requested"]%>
-          data-amount="<%=@trade["fiat_amount_requested"].to_i*100%>"
-          data-locale="auto"></script>
+  <article>
+    <%= hidden_field_tag 'amount',  @trade["fiat_amount_requested"].to_i %>
+    <%= hidden_field_tag(:stripeToken) %>
+  </article>
+  <button id='makePaymentButton'>Pay</button>
+  <script>
+    var handler = StripeCheckout.configure({
+      key: '<%= Rails.configuration.stripe[:publishable_key] %>',
+      locale: 'auto',
+      name: 'Sand Castles United',
+      description: 'One-time donation',
+      token: function(token) {
+        $('input#stripeToken').val(token.id);
+        $('form').submit();
+      }
+    });
+    
+    $('#makePaymentButton').on('click', function(e) {
+      e.preventDefault();
+    
+      $('#error_explanation').html('');
+    
+      var amount = $('input#amount').val();
+      amount = amount.replace(/\$/g, '').replace(/\,/g, '')
+    
+      amount = parseFloat(amount);
+      
+      if (isNaN(amount)) {
+        $('#error_explanation').html('<p>Please enter a valid amount in USD ($).</p>');
+      }
+      else {
+        amount = amount * 100; // Needs to be an integer!
+        handler.open({
+          amount: Math.round(amount)
+        })
+      }
+    });
+    
+    // Close Checkout on page navigation
+    $(window).on('popstate', function() {
+      handler.close();
+    });
+  </script>
 <% end %>
