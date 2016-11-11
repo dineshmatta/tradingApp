@@ -8,7 +8,8 @@ class PaxfulService
 
   ENDPOINTS = {
     'tradeList' => 'trade/list',
-    'fetchTrade' => 'trade/get'
+    'fetchTrade' => 'trade/get',
+    'tradeRelease' => 'trade/release'
   }
 
   def initialize(params)
@@ -30,6 +31,18 @@ class PaxfulService
   end
   
   def fetch_trade(trade_id)
+    begin
+      ## Make API call to paxful 
+      response = RestClient::Request.execute(method: :post, 
+                                             url: @url, 
+                                             payload: get_request_payload('&trade_hash='+trade_id),
+                                             headers: {Accept: 'application/json; version=1', "Content-Type": "text/plain", method: "POST"})
+    rescue RestClient::ExceptionWithResponse => e
+      e.response
+    end
+  end
+
+  def release_bitcoin(trade_id)
     begin
       ## Make API call to paxful 
       response = RestClient::Request.execute(method: :post, 

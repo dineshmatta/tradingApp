@@ -13,6 +13,7 @@
   </article>
   <article>
     <%= hidden_field_tag 'amount',  @trade["fiat_amount_requested"].to_i %>
+    <%= hidden_field_tag 'trade_hash',  @trade_hash %>
     <%= hidden_field_tag(:stripeToken) %>
   </article>
   <button id='makePaymentButton'>Pay</button>
