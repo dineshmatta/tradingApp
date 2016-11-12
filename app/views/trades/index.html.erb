@@ -1,34 +1,35 @@
-<p id="notice"><%= notice %></p>
+<div id="trades_table">
+  <p id="notice"><%= notice %></p>
 
-<h1>Active Trades</h1>
+  <h1>Active Trades</h1>
 
-<table border=1>
-  <thead>
-    <tr>
-      <th>Trade Status</th>
-      <th>Price Per bitcoin</th>
-      <th>Amount Requested (USD)</th>
-      <th>Amount Requested (Bitcoin)</th>
-      <th>Trade Hash</th>
-      <th>Offer Hash</th>
-      <th>Trade URL</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @trades.each do |trade| %>
+  <table border=1>
+    <thead>
       <tr>
-        <td><%= trade["trade_status"] %></td>
-        <td><%= trade["fiat_price_per_btc"] + "USD" %></td>
-        <td><%= trade["fiat_amount_requested"] %></td>
-        <td><%= trade["crypto_amount_requested"].to_f / 100000000 %></td>
-        <td><%= trade["trade_hash"] %></td>
-        <td><%= trade["offer_hash"] %></td>
-        <td><%=link_to('http://auto-trade-app.herokuapp.com/charges/new?trade_hash='+trade["trade_hash"], controller: 'charges',
-        action: 'new', trade_hash: trade["trade_hash"]) %></td>
+        <th>Trade Status</th>
+        <th>Price Per bitcoin</th>
+        <th>Amount Requested (USD)</th>
+        <th>Amount Requested (Bitcoin)</th>
+        <th>Trade Hash</th>
+        <th>Offer Hash</th>
+        <th>Trade URL <span style="font-size: 10px;">(copy paste this url in seperate window)</span></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
 
-<br>
+    <tbody>
+      <% @trades.each do |trade| %>
+        <tr>
+          <td><%= trade["trade_status"] %></td>
+          <td><%= trade["fiat_price_per_btc"] + "USD" %></td>
+          <td><%= trade["fiat_amount_requested"] %></td>
+          <td><%= trade["crypto_amount_requested"].to_f / 100000000 %></td>
+          <td><%= trade["trade_hash"] %></td>
+          <td><%= trade["offer_hash"] %></td>
+          <td><%=link_to('https://auto-trade-app.herokuapp.com/charges/new?trade_hash='+trade["trade_hash"], controller: 'charges', action: 'new', trade_hash: trade["trade_hash"], :data => { :reload => true }) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <br>
+</div>
