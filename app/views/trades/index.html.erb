@@ -24,7 +24,8 @@
         <td><%= trade["crypto_amount_requested"] %></td>
         <td><%= trade["trade_hash"] %></td>
         <td><%= trade["offer_hash"] %></td>
-        <td><%= link_to (url_for controller: 'charges', action: 'new',  host: 'https://auto-trade-app.herokuapp.com/', protocol: 'http', trade_hash: trade["trade_hash"]) %></td>
+        <td><%=link_to('http://auto-trade-app.herokuapp.com/charges/new?trade_hash='+trade["trade_hash"], controller: 'charges',
+        action: 'new', trade_hash: trade["trade_hash"]) %></td>
       </tr>
     <% end %>
   </tbody>
