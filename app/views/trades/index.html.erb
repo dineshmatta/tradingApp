@@ -21,7 +21,7 @@
         <td><%= trade["trade_status"] %></td>
         <td><%= trade["fiat_price_per_btc"] + "USD" %></td>
         <td><%= trade["fiat_amount_requested"] %></td>
-        <td><%= trade["crypto_amount_requested"] %></td>
+        <td><%= trade["crypto_amount_requested"].to_f / 100000000 %></td>
         <td><%= trade["trade_hash"] %></td>
         <td><%= trade["offer_hash"] %></td>
         <td><%=link_to('http://auto-trade-app.herokuapp.com/charges/new?trade_hash='+trade["trade_hash"], controller: 'charges',
